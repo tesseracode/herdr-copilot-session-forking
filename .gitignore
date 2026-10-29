@@ -1,0 +1,9 @@
+node_modules/
+*.tgz
+*.tar.gz
+*.sha256
+dist/
+.test-state*/
+*.log
+.env
+.env.*

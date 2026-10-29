@@ -1,0 +1,123 @@
+Install the experimental preview without disturbing active sessions
+==================================================================
+
+Candidate 0.3.0 has bounded local Linux evidence for four exact source/interactive
+pairs with helper 1.0.105 fixed. Read compatibility.txt for shell controls and
+limits; this does not qualify your installation automatically. Use the archive
+names below only with a reviewed bundle and checksum. Do not overwrite frozen
+prior distributions.
+
+Do not install into native Windows. Run these steps in the WSL distribution
+that owns the Herdr/Copilot conversations. No new reverse tunnel is required:
+copy the source bundle over an existing approved route and test locally.
+
+1. Inspect versions and ownership before changing anything.
+
+     herdr --version
+     copilot --version
+     node --version
+     herdr --help
+     herdr status server
+     herdr integration status
+
+   Read the server version, not only the installed executable version. Record
+   the active session name and the important panes' native IDs with pane get.
+   Do not stop, restart, update/handoff the running server, or close those panes.
+
+   The current matrix used Herdr 0.9.5, identity hook v4, a lab-only non-login
+   /bin/sh and a no-auto-update alias. It does not qualify arbitrary user wrappers.
+   If your environment lacks plugin support or its server is incompatible, defer
+   active-session use. An installed-binary update does not upgrade that server.
+   Arrange a maintenance window later; do not interrupt current work to test.
+
+2. Transfer the reviewed source archive and checksum.
+
+   Obtain the reviewed source archive and checksum from a trusted source:
+     herdr-copilot-session-forking-0.3.0.tar.gz
+     herdr-copilot-session-forking-0.3.0.tar.gz.sha256
+
+   Use an existing SSH alias or another approved file-transfer mechanism.
+   Do not create a new SSH server, copy credential caches, or publish a control
+   port for this installation. After copying both files into the same directory:
+
+     sha256sum -c herdr-copilot-session-forking-0.3.0.tar.gz.sha256
+     tar -tzf herdr-copilot-session-forking-0.3.0.tar.gz
+
+    On macOS, use shasum -a 256 -c instead of sha256sum -c. A checksum detects
+    corruption only; verify the archive's origin independently.
+
+   Inspect the listing: source, manifest, lockfile, tests, and runbooks only;
+   no credentials, node_modules, or test sessions. Stop on checksum mismatch.
+
+3. Extract into a NEW user-owned directory.
+
+   Choose an existing small-code storage location, for example:
+
+     archive="$PWD/herdr-copilot-session-forking-0.3.0.tar.gz"
+     target="$HOME/development/tools/herdr-copilot-session-forking-0.3.0"
+     test ! -e "$target" || { printf 'Choose a new target directory.\\n'; exit 1; }
+     mkdir -p "$target"
+     tar -xzf "$archive" -C "$target"
+     cd "$target"
+     npm ci --no-audit --no-fund
+     npm test
+     ./node_modules/.bin/copilot --no-auto-update --version
+
+   Dependencies include the pinned helper CLI, not the default interactive
+   launcher. Your global CLI and existing running processes are not changed.
+   Child launch and recovery use shell-native `copilot --resume=<id>`, with
+   quoted COPILOT_HOME, no PATH override, and no --no-auto-update flag.
+   Confirm that this command works under your pane shell's functions, aliases,
+   and launch policy using only disposable sessions. No private-CLI fallback
+   occurs if it fails.
+
+   Optional settings in the plugin action environment:
+   - HERDR_COPILOT_FORK_HELPER_CLI selects an absolute helper path only.
+   - HERDR_COPILOT_FORK_CLI preserves legacy paired mode: the resolved absolute
+     path runs helper, child, and recovery, bypassing shell functions/aliases
+     for launch/recovery and retaining --no-auto-update there. Herdr restoration
+     does not preserve this paired override; it uses its canonical launcher.
+   Set neither for the default. Never set both (including empty values); the
+   action rejects ambiguous settings. Invalid/unresolvable paths also fail.
+   No version allowlist is enforced. Combinations outside the bounded matrix
+   remain unqualified; do not infer compatibility from dependency pins.
+   The action's launcher metadata describes policy and helper path, not runtime
+   version detection. See README.txt for the exact fields.
+
+4. Inspect the Copilot home and identity integration.
+
+     printf 'Copilot home: %s\\n' "${COPILOT_HOME:-$HOME/.copilot}"
+     herdr integration status
+
+   A "current" integration status alone does not prove that a running session
+   reported its identity. Do not reinstall hooks, edit settings, or restart an
+   important conversation just to make it forkable.
+
+   The plugin/helper environment and source must use the same Copilot home.
+   If you use per-pane custom homes, stop and configure/review that explicitly.
+   Do not copy auth files between homes.
+
+5. Link the plugin without changing keybindings.
+
+     herdr plugin link "$target"
+     herdr plugin list --json
+     herdr plugin action list --plugin tesseracode.copilot-session-forking
+
+   Linking is a machine-local plugin registration. It is not a server upgrade
+   or a session migration. If the running server cannot recognize it, do not
+   restart it. Use a disposable named test server as described in test.txt.
+
+6. Follow test.txt using a NEW disposable source.
+
+   Do not invoke any fork action from an important pane during the first pass.
+   Initial target: no filesystem edits, no active source turn, no subagents.
+
+Disable / rollback
+------------------
+
+  herdr plugin disable tesseracode.copilot-session-forking
+
+Disable prevents future action use; it does not delete Copilot history or stop
+already launched child agents. Inspect those panes before closing them yourself.
+Do not roll back a Herdr executable while expecting an incompatible server to
+keep accepting commands. No server upgrade is required by this runbook.

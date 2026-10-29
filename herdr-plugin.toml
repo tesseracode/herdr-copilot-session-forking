@@ -1,0 +1,24 @@
+id = "tesseracode.copilot-session-forking"
+name = "Herdr Copilot Session Forking"
+version = "0.3.0"
+min_herdr_version = "0.9.0"
+description = "A Herdr plugin for forking idle Copilot CLI sessions into panes or tabs."
+platforms = ["linux", "macos"]
+
+[[actions]]
+id = "fork-right"
+title = "Fork Copilot right"
+contexts = ["pane"]
+command = ["node", "src/action.mjs", "right"]
+
+[[actions]]
+id = "fork-down"
+title = "Fork Copilot down"
+contexts = ["pane"]
+command = ["node", "src/action.mjs", "down"]
+
+[[actions]]
+id = "fork-tab"
+title = "Fork Copilot into a tab"
+contexts = ["pane"]
+command = ["node", "src/action.mjs", "tab"]

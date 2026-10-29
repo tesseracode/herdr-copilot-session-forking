@@ -1,0 +1,120 @@
+Candidate 0.3.0: bounded local compatibility evidence
+===================================================
+
+On 2026-10-29, all four exact source/interactive CLI pairs below passed
+disposable local Linux qualification. This qualifies the stated test controls,
+not every installation of those versions or an inferred semantic-version range.
+
+Environment and controls
+------------------------
+
+- Herdr client/server 0.9.5; Copilot native-identity integration hook v4;
+  Node 22.22.2; SDK 1.0.28; private helper CLI 1.0.105 in every row.
+- The SDK-scoped Zod 4.6.6 override remained installed. It is an explicit
+  deviation from the upstream SDK dependency pin, not an upstream SDK fix.
+- The default system-shell policy was exercised, not the legacy paired override.
+  The plugin submitted COPILOT_HOME plus canonical copilot --resume=<child>
+  through the real pane shell; it did not inject a private PATH.
+- Test-only server PATH selected a named exact-version native executable through
+  a fixture symlink. Non-login /bin/sh inherited that PATH. Its test-only ENV
+  file defined alias copilot='copilot --no-auto-update', used consistently for
+  normal child launches, manual recovery and automatic restores.
+- These controls isolated an existing user-shell mount-guard refusal without
+  changing real shell configuration. They are NOT a stock production-wrapper
+  pass. Real Copilot home/authentication remained in place; no credentials were
+  copied, no permission allow-all flag was used, and only the inspected empty
+  disposable folder received a session-only manual trust answer.
+- Running interactive executables were resolved through /proc and independently
+  checked with --no-auto-update --version before and after restart. Actual
+  private headless helper processes were also observed and verified as 1.0.105.
+  All dispatcher rows reported the same pinned project helper launcher.
+- A brief disposable PTY display attachment resized tiny headless panes.
+
+Exact matrix
+------------
+
+All version cells below are Copilot CLI versions; helper is always 1.0.105.
+PASS includes a real native source hook, real plugin-dispatcher fork, distinct
+child identity, inherited source marker, isolated persisted child messages,
+subsequent usable source turn, and the restoration checks described next.
+
+ Source    Interactive child   Layouts tested       Restored source/children   Result
+ 1.0.100   1.0.100             right, down, tab     1.0.100 / 1.0.100          PASS
+ 1.0.103   1.0.103             right only           1.0.103 / 1.0.103          PASS
+ 1.0.105   1.0.105             right only           1.0.105 / 1.0.105          PASS
+ 1.0.100   1.0.105             right only           1.0.105 / 1.0.105          PASS
+
+The mixed row deliberately changes its original source from 1.0.100 to 1.0.105
+at restart: automatic restoration uses the unchanged canonical shell launcher,
+not the source's original absolute executable.
+
+Established-session restoration
+-------------------------------
+
+Every row passed a normal owned-server stop/restart with established agents.
+The first row also passed SIGKILL of the verified owned server followed by
+restart, covering its source and all three layout children.
+
+Checks confirmed that old foreground processes exited; new processes used the
+expected actual CLI versions; native IDs, cwd, workspace and pane/tab mappings
+were preserved; and every previously recorded user-event ID remained readable.
+Each restored session completed a NEW distinct no-tools marker turn. Separate
+SDK reader helpers checked persisted history without resuming either session,
+including assistant marker recall and absence of other branches' new prompts.
+No manual resume command or native-ID seeding was used for these restores.
+Trust prompts could recur and were handled manually only after inspection.
+
+Startup attention and safety results
+-----------------------------------
+
+- The six matrix dispatcher launches initially returned waiting_for_user with
+  unverified child identity and visible folder trust. This is not an automatic
+  ready/trust handoff. Manual session-only trust and short child turns produced
+  the expected native IDs and recalled inherited markers.
+- A later real concurrent-fork check naturally produced identity_pending in a
+  narrow pane while folder trust was still visible. The test did not inject that
+  classification. After the action completed, trust remained pending and a
+  separate persisted-event read found only inherited source user messages:
+  no automatic approval or child prompt had been sent.
+- Two concurrent real runFork calls on one source produced exactly one child
+  and one source_locked refusal. This is a bounded overlap check, not stress.
+- A plain-shell real dispatcher invocation refused with not_copilot and no new
+  child pane. Missing-native-ID, working and blocked source-read fixtures
+  refused before native helper invocation, with no new pane. The fixture
+  nativeFork spy observed zero calls; these are instrumented source reads,
+  not naturally busy production agents.
+- An additional actual folder-trust-blocked child refused a dispatcher fork
+  with source_not_idle, preserving the pending trust and pane count. Its known
+  native ID was explicitly reported before the first turn solely to make the
+  blocked-state branch reachable; the blocked UI itself was naturally observed.
+- A controlled pane-run boundary fault followed a REAL native fork and layout.
+  Exactly one launch attempt occurred, without automatic retry; child ID, pane
+  and shell-native recovery command were retained and the lock released.
+  Deliberate manual execution of that command resumed the SAME child, whose
+  identity, inherited context and isolated new message were verified.
+- All owned test TUIs exited normally before final named-server stops.
+  Recorded test-agent/server/helper PIDs were gone; owned lock directories
+  and project helper processes were absent. Shared history/logs were preserved.
+
+Failures, limits and deferred work
+---------------------------------
+
+No product failure was observed within the exact matrix or safety scope above.
+Controller-only output-format, narrow-display and restored-version expectation
+assertions were corrected; persisted evidence was rechecked without blindly
+resubmitting completed turns. No runtime/unit-test/package changes were required.
+
+This is Linux local preview evidence, not macOS/native Windows qualification,
+machine power-loss durability, mid-turn crash recovery, long-running busy-state
+qualification, a load/race stress test, or evidence that arbitrary wrappers work.
+Screen-derived lifecycle detection remains a limitation. Normal session history
+retention is not a machine-power-loss guarantee. Restoration was tested after
+successful establishment, separately from partial launch-failure recovery.
+
+Varying the helper CLI/SDK is an untested deferred stretch goal. No other CLI
+versions, legacy-paired live matrix, global upgrades or remote installations
+were qualified by this run. Requalify changes to the helper, SDK override,
+interactive runtime, shell configuration or native identity integration.
+
+Private native/process/event IDs and synthetic prompts are intentionally
+excluded from this public record. The frozen 0.2.1 distribution was untouched.

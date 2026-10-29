@@ -1,0 +1,139 @@
+Current candidate 0.3.0 qualification - 2026-10-29
+================================================
+
+All four approved exact local Linux source/interactive CLI pairs passed:
+1.0.100/1.0.100, 1.0.103/1.0.103, 1.0.105/1.0.105 and 1.0.100/1.0.105.
+SDK 1.0.28, helper CLI 1.0.105 and the SDK-scoped Zod 4.6.6 override were fixed
+throughout. Herdr client/server 0.9.5 and native identity hook v4 were used.
+
+See runbooks/compatibility.txt for the sanitized exact matrix, shell controls,
+actual restored versions, initial attention states, safety instrumentation and
+evidence limits. Those details govern these claims.
+
+- Real plugin-dispatcher forks, native identities, context inheritance,
+  persisted-message isolation and subsequent source turns passed.
+- Right/down/tab were covered on 1.0.100/1.0.100; other rows covered right only.
+- All rows passed established-session normal server restart, retaining native
+  IDs, pane/tab mapping, every recorded prior user-event ID and usable new
+  isolated turns. The primary row additionally passed owned-server SIGKILL.
+- Mixed-row restoration used canonical 1.0.105 for both source and child, not
+  the source's original 1.0.100 executable.
+- Plain-shell refusal, zero-helper missing-ID/working/blocked read fixtures,
+  actual trust-blocked refusal with explicitly seeded known identity, concurrent
+  one-child/source_locked behavior, naturally observed identity_pending, and
+  one-attempt injected launch failure followed by same-child manual recovery
+  passed. Fixtures and manual trust are not automatic production behavior.
+- Actual process executables/versions and persisted assistant marker recall
+  were checked. All owned agents, servers, helpers and locks were cleaned up;
+  shared native history/logs and the frozen 0.2.1 distribution were preserved.
+
+The shell-native default policy was tested with an explicit lab PATH,
+non-login /bin/sh and a test-only no-auto-update alias. This is not a stock
+user-wrapper pass. No product failure was observed in this bounded scope.
+Varying helper versions remains deferred; macOS/Windows, mid-turn or machine
+power-loss durability, other versions and arbitrary wrappers remain untested.
+
+Historical qualification records
+================================
+
+Local preview qualification - 2026-10-28
+======================================
+
+Environment: Linux, Node 22.22.2, Herdr client/server 0.9.5.
+Copilot identity integration: v4.
+Helper: SDK 1.0.28 with project-local CLI 1.0.105, auto-update disabled.
+Sources exercised: CLI 1.0.100 and CLI 1.0.105, idle/done.
+Native Windows and macOS: not exercised.
+
+Results
+-------
+
+- 87 built-in Node tests passed.
+- Independent source/helper/child runtimes completed a native fork, child turn,
+  and subsequent original-source turn without history contamination.
+- Actual Copilot TUI source forked through the real Herdr plugin dispatcher.
+- fork-right, fork-down, and fork-tab created distinct native child sessions,
+  preserved source history, and retained source cwd/workspace boundaries.
+- Read-only persisted-event checks confirmed each plugin-created child's
+  unique user prompt was absent from its original source.
+- Actual source 1.0.100 -> helper/child 1.0.105 workflow completed.
+- Folder-trust prompts remained pending until manually handled for the empty
+  disposable folder. No plugin approval or prompt injection occurred.
+- Missing native identity and non-Copilot source invocations failed, showed
+  attention notifications, and created no new panes.
+- Busy-source, duplicate-lock, stale-identity, uncertain-fork, helper-cleanup,
+  hook-mismatch, and launch-failure branches are covered by unit tests.
+- Helper processes and owned locks were gone after actions.
+- Only the named disposable Herdr lab was stopped afterward; its agents exited.
+
+Observed limitation
+-------------------
+
+A narrow right split displayed folder trust while Herdr reported idle. The
+plugin waited its bounded identity window and returned identity_pending, not
+ready. Wide child panes returned waiting_for_user at trust. Herdr's outer log
+status "succeeded" is command-exit status; read the inner JSON status.
+
+The child identity hook may arrive only on the first user turn. Subsequent
+manual trust/prompt interaction confirmed the expected distinct child IDs.
+The plugin does not automatically retry, prompt, or focus unverified children.
+
+These are preview results, not a guarantee of other CLI versions or active-turn
+forking. Use runbooks/test.txt before touching important sessions.
+
+Scope of this record
+--------------------
+
+These results describe the original 0.1.0 prototype, before the public identity
+and packaging changes. A second operator-run Linux/WSL installation also
+confirmed all three layouts, source usability, distinct native identities and
+persisted-history isolation. Failure/refusal checks on that installation were
+not reported. These observations do not qualify macOS or every failure path.
+
+0.2.1 advisory remediation and local qualification - 2026-10-29
+-------------------------------------------------------------
+
+No patched SDK release was available: 1.0.28 was still the latest stable and
+declared an exact Zod 4.3.6 dependency. This candidate keeps SDK 1.0.28 and
+CLI 1.0.105, with an explicit SDK-scoped npm override to Zod 4.6.6.
+The override is outside the upstream SDK dependency pin.
+
+Package-level npm and OSV advisory matching covered all 40 locked package/
+version pairs and returned no matches after the change. The installed SDK
+resolved Zod 4.6.6. This addresses GHSA-mrhx-c7xc-m3w5's published affected
+range; it is not proof of vulnerability absence in bundled/native components.
+
+Qualification used an owned disposable Linux lab, Herdr 0.9.5, identity hook
+v4, and source/helper/child CLI 1.0.105. No deployed remote installation or
+important conversation was upgraded, resumed, or stopped.
+
+- Built-in Node regression and packaging tests passed.
+- Independent real SDK source/helper/child runtimes preserved history, completed
+  child and subsequent source turns, and kept child messages out of the source.
+- Actual Herdr fork-right, fork-down and fork-tab dispatcher actions produced
+  distinct native identities, inherited context and isolated persisted child
+  messages. The original source remained usable afterward.
+- Plain-shell and missing-native-identity dispatcher calls refused without
+  creating a child/pane.
+- An explicitly reported working-state fixture returned source_not_idle.
+  A real trust-blocked child also returned source_not_idle without creating
+  another pane. Its known native ID was explicitly seeded for that test before
+  the first user turn; the blocked state itself was naturally observed.
+- Two real overlapping action processes produced one child; the second action
+  returned source_locked while the first owned the lock.
+- Actual trust dialogs remained pending without plugin approval or prompts.
+  Narrow geometry also exercised identity_pending; it was not treated as ready.
+  The operator inspected and accepted only the empty test folder for individual
+  sessions. A brief disposable display-client attachment made tiny panes readable.
+- A controlled pane-run boundary fault followed a real native fork and real
+  layout creation. Exactly one launch attempt occurred; the distinct child ID
+  and shell pane were retained, safe recovery details returned, and the owned
+  lock released. This was injected failure evidence, not an organic crash.
+- After checking that no live pane owned the preserved child, the operator
+  explicitly launched its recovery command. Its native identity and inherited/
+  isolated history were confirmed, without resuming the original source.
+
+These are bounded local preview checks, not a load/race stress test, complete
+failure-path proof, qualification of older source runtimes with the override,
+or a macOS qualification. The existing screen-derived busy/trust detection
+limitations still apply.

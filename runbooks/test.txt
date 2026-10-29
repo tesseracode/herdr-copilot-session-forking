@@ -1,0 +1,169 @@
+Validate the preview on disposable sessions
+==========================================
+
+Prerequisites
+-------------
+
+Complete install.txt. Keep important conversations running and untouched.
+Use Herdr, Node, and Copilot in the same OS environment. For WSL, all three
+must run in the SAME distribution, not across the Windows/WSL boundary.
+Inspect all commands before running them. Never use "allow all" permission flags.
+
+1. Open a separate named Herdr lab.
+
+   From a separate WSL terminal, outside your important Herdr session:
+
+     herdr --session copilot-fork-validation
+
+   This creates/attaches that named lab, not your existing active session. Use a
+   new name if it already exists. Do not approve any incompatible-server stop or
+   handoff request. An isolated lab is for compatibility tests, not migration.
+
+   In its shell, confirm:
+
+     printf '%s\\n' "$HERDR_PANE_ID" "$HERDR_SOCKET_PATH"
+     herdr status server
+
+   The socket must identify the disposable named session.
+
+2. Start a disposable Copilot conversation.
+
+   Use an empty disposable folder. Inspect the pane shell's normal launcher:
+
+     command -V copilot
+     copilot --version
+     copilot
+
+   Candidate 0.3.0 uses this shell-native launcher for interactive children and
+   recovery, not the private helper executable. Functions, aliases, and local
+   policy apply. Do not bypass a failing shell guard or change global tooling
+   merely to make the test pass. The helper stays pinned to CLI 1.0.105 unless
+   explicitly overridden; test custom helper versions separately.
+   Inspect any folder-trust prompt and approve only the disposable folder.
+
+   Send:
+     Remember marker FORK_SOURCE_A. Reply with that marker. Do not use tools.
+
+   Wait until the turn and any background work have finished.
+
+3. Confirm the source native ID.
+
+   From another shell connected to the SAME lab, inspect:
+
+     herdr --session copilot-fork-validation pane list
+     herdr --session copilot-fork-validation pane get <source-pane-id>
+
+   Expect agent "copilot", agent_status "idle" or "done", and:
+     agent_session.agent = "copilot"
+     agent_session.kind = "id"
+     agent_session.value = a nonempty native session ID
+
+   Record the source ID. If missing, stop; do not guess the newest session by cwd.
+   Hook reporting can occur only after a session actually begins.
+
+4. Invoke one fork action while the SOURCE pane is focused.
+
+   Use the Herdr action menu (look up its binding in your Herdr configuration),
+   or from a lab-targeted second shell after explicitly focusing the source:
+
+     herdr --session copilot-fork-validation agent focus <source-pane-id> && herdr --session copilot-fork-validation plugin action invoke fork-right --plugin tesseracode.copilot-session-forking
+
+   Invoke once. The action creates a new native child before opening its pane.
+   An invocation acknowledgement alone is not proof of completion; inspect the
+   plugin log and pane identity:
+
+     herdr --session copilot-fork-validation plugin log list --plugin tesseracode.copilot-session-forking
+     herdr --session copilot-fork-validation pane list
+
+   Read the inner JSON status in stdout/stderr. Herdr's outer "succeeded" only
+   means the action exited cleanly; waiting_for_user and identity_pending do
+   NOT establish a completed handoff. Attention notifications name the pane.
+
+   If the child is at folder trust, inspect/answer that dialog yourself. Do not
+   invoke the fork action again to recover a pending startup prompt.
+   In very narrow panes, Herdr may report idle even at that dialog. Inspect the
+   actual screen. After answering trust, wait for visible input readiness before
+   sending the child prompt; do not blindly retry a blocked or stalled prompt.
+
+5. Confirm independence and history.
+
+   The original pane must still report the original native ID.
+   The child must report a DIFFERENT native ID after initialization.
+
+   In the child, send:
+     What source marker do you remember? Also reply CHILD_ONLY_B. Do not use tools.
+
+   Expect FORK_SOURCE_A and CHILD_ONLY_B in the child. In the source, send:
+     Reply SOURCE_STILL_USABLE_C. Do not use tools.
+
+   From the installation directory, validate persisted user-message isolation:
+
+     node scripts/check-history.mjs <source-native-id> <child-native-id> FORK_SOURCE_A CHILD_ONLY_B
+
+   Expect historyPreserved=true and sourceIsolated=true. This reads snapshots
+   without resuming either session. Do not confuse pane IDs with native IDs.
+
+6. Exercise the other layouts using the same disposable source.
+
+   Focus the source before EACH invocation:
+
+     herdr --session copilot-fork-validation agent focus <source-pane-id> && herdr --session copilot-fork-validation plugin action invoke fork-down --plugin tesseracode.copilot-session-forking
+
+     herdr --session copilot-fork-validation agent focus <source-pane-id> && herdr --session copilot-fork-validation plugin action invoke fork-tab --plugin tesseracode.copilot-session-forking
+
+   Complete each action before invoking another. Give each child a different
+   marker, and repeat the identity/history check for each child.
+   Expect independent child IDs, same working directory, and the tab in the source
+   workspace. Resolve each startup prompt manually. Do not run editing tasks.
+
+7. Check refusal and recovery behavior.
+
+   Invoke from a plain shell: it should reject without creating a child/pane.
+   Invoke while a disposable source is busy or blocked: it should reject.
+   Do not start a long or expensive turn merely to create a busy-state test.
+   Never attempt these checks against important conversations.
+   Confirm the action's captured source state was still working/blocked. If a
+   short turn has already settled to idle, a new fork is legitimate and does
+   not exercise refusal. Do not repeatedly race model turns to manufacture it.
+   Controlled lifecycle/identity fixtures must remain in the disposable lab
+   and be reported as instrumentation, not naturally observed agent state.
+
+   Duplicate invocations must be serialized or refused, never allowed to fork
+   the same source concurrently. Exercise this only in the disposable lab.
+   Unit tests simulate startup/launch failures, identity changes and uncertain
+   cleanup. Do not break production authentication or kill unrelated processes
+   to manufacture those failures.
+
+   If a child exists but launch/identity confirmation fails, retain its reported
+   ID and pane. Inspect the existing child instead of blindly resuming it in yet
+   another process. Never release native locks or reuse the source ID as recovery.
+
+8. End only the disposable lab.
+
+   Inspect the lab's panes and exit each disposable Copilot with /exit. From the
+   separate shell, you may stop only the named lab you created:
+
+     herdr session stop copilot-fork-validation
+
+   Do not run bare "herdr server stop" from an important session.
+   Stopping the lab is sufficient for normal cleanup. It does not erase saved
+   Copilot history, plugin logs, or the plugin installation. Keep those private.
+   Delete individual test histories only after identifying them in Copilot's
+   supported session-management interface; never delete the whole Copilot home.
+   Do not remove plugin state while any action is running.
+
+Report
+------
+
+Record Herdr client/server versions, helper CLI version, actual source/child
+runtime versions, shell launcher resolution, WSL distribution,
+source and child identity distinctions, layout results, startup dialogs, and any
+error codes. Do not include tokens, credential files, private conversation text,
+or sensitive repository contents.
+
+Only after this disposable pass should you consider an idle important session.
+Use runbooks/compatibility.txt for the exact qualified launcher/version pairs
+and test controls. Do not infer a supported version range from a few samples.
+Different wrappers, operating systems, Copilot homes, helper versions, or
+runtime versions require their own disposable qualification. Do not upgrade or
+restart active work just to match the preview.

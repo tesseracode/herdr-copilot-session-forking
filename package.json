@@ -1,0 +1,51 @@
+{
+  "name": "herdr-copilot-session-forking",
+  "version": "0.3.0",
+  "private": true,
+  "type": "module",
+  "description": "A Herdr plugin for forking Copilot CLI sessions into panes or tabs, not a fork of Copilot CLI.",
+  "license": "MIT",
+  "files": [
+    "LICENSE",
+    "README.txt",
+    "herdr-plugin.toml",
+    "package-lock.json",
+    "src/action.mjs",
+    "src/errors.mjs",
+    "src/fork.mjs",
+    "src/herdr.mjs",
+    "src/lock.mjs",
+    "src/native-fork.mjs",
+    "src/report.mjs",
+    "src/worker.mjs",
+    "scripts/check-history.mjs",
+    "scripts/native-spike.mjs",
+    "scripts/pack-source.mjs",
+    "test/fork.test.mjs",
+    "test/herdr.test.mjs",
+    "test/lock.test.mjs",
+    "test/native-fork.test.mjs",
+    "test/report.test.mjs",
+    "test/pack-source.test.mjs",
+    "runbooks/install.txt",
+    "runbooks/test.txt",
+    "runbooks/qualification.txt",
+    "runbooks/compatibility.txt"
+  ],
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "pack:source": "node scripts/pack-source.mjs"
+  },
+  "dependencies": {
+    "@github/copilot": "1.0.105",
+    "@github/copilot-sdk": "1.0.28"
+  },
+  "overrides": {
+    "@github/copilot-sdk@1.0.28": {
+      "zod": "4.6.6"
+    }
+  }
+}
